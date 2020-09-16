@@ -29,7 +29,8 @@ DEFAULT_MOBILE_SEARCH_FIELDS = DotDict({
 DEFAULT_SEARCH_FIELDS = DotDict({
     'general': [
         {'identifier': 'mapFeature.updated_at'},
-        {'identifier': 'mapFeature.updated_by'}
+        {'identifier': 'mapFeature.updated_by'},
+        {'identifier': 'tree.import_tag'},
     ],
     'missing': [
         {'identifier': 'species.id'},
@@ -43,6 +44,9 @@ DEFAULT_SEARCH_FIELDS = DotDict({
     'Tree': [
         {'identifier': 'tree.diameter'},
         {'identifier': 'tree.date_planted'}
+    ],
+    'Tag': [
+        {'identifier': 'tree.import_tag'},
     ]
 })
 
@@ -145,8 +149,10 @@ def advanced_search_fields(instance, user):
         visible_fields = []
         for field_info in field_infos:
             model, field_name = _parse_field_info(instance, field_info)
-            if model.field_is_visible(user, field_name):
-                visible_fields.append(field_info)
+            visible_fields.append(field_info)
+            # FIXME add correct permissions
+            #if model.field_is_visible(user, field_name):
+            #    visible_fields.append(field_info)
         return visible_fields
 
     fields = copy.deepcopy(instance.search_config)

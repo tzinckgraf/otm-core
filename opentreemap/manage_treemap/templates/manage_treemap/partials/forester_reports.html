@@ -1,0 +1,32 @@
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+<div id="management">
+
+    <div class="dashboard" style="width: 85%">
+        <h3>Trees Counts</h3>
+        <div id="tree-counts-chart">
+            <canvas height="50"></canvas>
+        </div>
+
+        <h3>Tree Conditions</h3>
+        <div id="tree-conditions-chart">
+            <canvas height="50"></canvas>
+        </div>
+
+        <h3>Tree Conditions By Species</h3>
+        <div id="tree-conditions-by-species-chart">
+            <canvas height="50"></canvas>
+        </div>
+
+        <h3>Trees With Issues</h3>
+        <img src="/static/img/spinner.gif" class="spinner pull-right" style="display:none;">
+        <table class="table table-hover table-striped" id="trees-table">
+            <thead></thead>
+            <tbody style="white-space: nowrap;" ></tbody>
+        </table>
+    </div>
+
+    <!--
+        <div class="sidebar" style="width: 15%">
+        </div>
+    -->
+</div>

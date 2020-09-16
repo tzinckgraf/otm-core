@@ -13,6 +13,7 @@ var dom = {
     tablesContainer: '#import-tables',
     tableContainer: '.import-table',
     treeForm: '#import-trees-form',
+    treeFormTag: '#importer-tree-tag',
     speciesForm: '#import-species-form',
     fileChooser: 'input[type="file"]',
     importButton: 'button[type="submit"]',
@@ -84,6 +85,10 @@ function handleForm($container, formSelector, startImportUrl, tableSelector) {
         e.preventDefault();
         enableImportUI(false);
         $(dom.spinner).show();
+        var tag = $(dom.treeFormTag).val();
+        if ('#' + e.target.id == dom.treeForm && tag != null && tag != '') {
+            formData.append('tag', tag);
+        }
         return Bacon.fromPromise($.ajax({
             type: 'POST',
             url: startImportUrl,

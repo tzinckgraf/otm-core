@@ -53,6 +53,9 @@ class GenericImportEvent(models.Model):
     last_processed_at = models.DateTimeField(null=True, blank=True)
     is_lost = models.BooleanField(default=False)
 
+    # allow individual imports to be tagged
+    tag = models.CharField(max_length=255, null=True)
+
     # The id of a running verification task.  Used for canceling imports
     task_id = models.CharField(max_length=50, default='', blank=True)
 

@@ -1103,6 +1103,9 @@ class Tree(Convertible, UDFModel, PendingAuditable, ValidationMixin):
     date_removed = models.DateField(null=True, blank=True,
                                     verbose_name=_("Date Removed"))
 
+    # FIXME do not make this a model property. this is for demo purposes
+    import_tag = models.CharField(max_length=255, null=True, blank=True, verbose_name=_("Import Tag"))
+
     users_can_delete_own_creations = True
     REQUIRED_FIELDS = ['diameter', 'height', 'canopy_height']
 

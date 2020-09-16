@@ -407,6 +407,11 @@ class UserDefinedFieldDefinition(models.Model):
     """
     isrequired = models.BooleanField(default=False)
 
+    """
+    Add an ordering to the new UDFs
+    """
+    order = models.IntegerField(null=True)
+
     class Meta:
         unique_together = ('instance', 'model_type', 'name')
 

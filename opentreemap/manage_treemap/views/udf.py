@@ -145,7 +145,7 @@ def udf_list(request, instance):
 
     udfs = sorted([udf for udf in udf_defs(instance)
                    if udf.model_type in udf_model_names],
-                  key=lambda udf: (udf.model_type, udf.iscollection,
+                  key=lambda udf: (udf.order, udf.model_type, udf.iscollection,
                                    udf.name))
 
     def dict_update(d1, d2):

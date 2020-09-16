@@ -5,6 +5,7 @@
 <table class="table table-hover">
     <thead>
         <tr>
+            <th>{% trans "Tag" %}</th>
             <th>{% trans "Uploaded Date" %}</th>
             <th>{% trans "Status" %}</th>
             <th>{% trans "Rows" %}</th>
@@ -15,6 +16,7 @@
     <tbody>
     {% for ie in table.rows %}
         <tr>
+            <td>{{ ie.tag|default_if_none:"" }}</td>
             <td>{{ ie.created }}</td>
             <td>{{ ie.status_summary }}</td>
             <td>

@@ -82,6 +82,10 @@ def start_import(request, instance):
     kwargs = {k: 1 / storage_to_instance_units_factor(instance, v[0], v[1])
               for (k, v) in factors.items()}
 
+    tag = request.POST.get('tag')
+    if tag:
+        kwargs['tag'] = tag
+
     process_csv(request, instance, import_type, **kwargs)
 
     return get_import_table(request, instance, table)

@@ -14,6 +14,11 @@
                   <button class="btn btn-info pull-right" type="submit" disabled>{% trans "Import" %}</button>
                   <h4>{% trans "Tree Import" %}</h4>
                   <input type="hidden" name="type" value="tree">
+
+                  <label>{% trans "Add Tag (optional)" %}:</label>
+                  <input id="importer-tree-tag" class="form-control" type="text" />
+                  <br>
+
                   <div class="input-group">
                     {% trans "CSV to Upload:" %} <input type="file" name="file" accept="text/csv,.csv">
                   </div><!-- /input-group -->

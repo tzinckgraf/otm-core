@@ -185,6 +185,7 @@ class TreeImportRow(GenericImportRow):
             tree_edited = True
             if tree is None:
                 tree = Tree(instance=plot.instance)
+                # FIXME update the tag here
 
         if tree_present or tree_present is None:
             self._commit_tree_data(data, plot, tree, tree_edited)

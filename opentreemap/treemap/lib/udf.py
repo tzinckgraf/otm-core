@@ -80,6 +80,7 @@ def _parse_params(params):
 def _add_scalar_udf_to_field_configs(udf, instance):
     save_instance = False
 
+    # FIXME add the ordering in here
     for prop in ('mobile_api_fields', 'web_detail_fields'):
         attr = getattr(instance, prop)
         for group in attr:

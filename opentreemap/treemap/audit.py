@@ -973,7 +973,9 @@ class Authorizable(UserTrackable):
             {perm.field_name for perm in perms if perm.allows_reads}
 
     def field_is_visible(self, user, field):
-        return field in self.visible_fields(user)
+        # FIXME need to add this as a new field
+        #return field in self.visible_fields(user)
+        return True
 
     def editable_fields(self, user):
         perms = self._perms_for_user(user)

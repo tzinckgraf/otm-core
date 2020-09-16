@@ -24,21 +24,13 @@ def reports(request, instance):
     }
 
 
-def forester_reports(request, instance):
-    return {
-        'instance': instance,
-    }
-
-
 def get_reports_data(request, instance, data_set, aggregation_level):
     data_set_funcs = {
         'count': get_tree_count,
         'species': get_species_count,
         'condition': get_tree_conditions,
         'diameter': get_tree_diameters,
-        'ecobenefits': get_ecobenefits,
-        'condition_by_species': get_tree_conditions_by_species,
-        'forester_trees': get_forester_trees
+        'ecobenefits': get_ecobenefits
     }
     if data_set in data_set_funcs:
         return {'data': data_set_funcs[data_set](aggregation_level, instance)}
@@ -104,40 +96,6 @@ def get_tree_conditions(aggregation_level, instance):
         and     lower(b.category) = %s
         and     b.name is not null
         group by b.name
-    """
-    columns = [
-        'name',
-        'healthy',
-        'unhealthy',
-        'dead',
-        'sidewalk_issue',
-        'power_lines_issue'
-    ]
-    with connection.cursor() as cursor:
-        cursor.execute(query, [aggregation_level])
-        results = cursor.fetchall()
-        return [dict(zip(columns, r)) for r in results]
-
-
-def get_tree_conditions_by_species(aggregation_level, instance):
-    query = """
-        select  coalesce(s.common_name, 'Other') as name,
-                sum(case when t.udfs -> 'Condition' = 'Healthy' then 1 else 0 end) as healthy,
-                sum(case when t.udfs -> 'Condition' = 'Unhealthy' then 1 else 0 end) as unhealthy,
-                sum(case when t.udfs -> 'Condition' = 'Dead' then 1 else 0 end) as dead,
-                sum(case when t.udfs -> 'JC Forester - Roots Sidewalk Issue' = 'Yes' then 1 else 0 end) as sidewalk_issue,
-                sum(case when t.udfs -> 'JC Forester - Canopy Power Lines Issue' = 'Yes' then 1 else 0 end) as power_lines_issue
-        from    treemap_mapfeature m
-        join	treemap_tree t  on m.id = t.plot_id
-        left join treemap_species s on s.id = t.species_id
-        where   1=1
-        group by coalesce(s.common_name, 'Other')
-        order by sum(case when t.udfs -> 'Condition' = 'Healthy' then 1 else 0 end)
-                + sum(case when t.udfs -> 'Condition' = 'Unhealthy' then 1 else 0 end)
-                + sum(case when t.udfs -> 'Condition' = 'Dead' then 1 else 0 end)
-                + sum(case when t.udfs -> 'JC Forester - Roots Sidewalk Issue' = 'Yes' then 1 else 0 end)
-                + sum(case when t.udfs -> 'JC Forester - Canopy Power Lines Issue' = 'Yes' then 1 else 0 end) desc
-        limit 10
     """
     columns = [
         'name',
@@ -236,51 +194,3 @@ def get_ecobenefits(aggregation_level, instance):
     # add our totals at the end
     data.append(data_all)
     return {'columns': columns, 'data': data}
-
-
-def get_forester_trees(aggregation_level, instance):
-    """
-    Get the forester issues, which are either not healthy or have a forester issue
-    """
-
-    query = """
-        select  plot_id,
-                s.common_name,
-                s.genus || ' ' || s.species as species,
-                ward.name as ward,
-                neighborhood.name as neighborhood,
-                t.udfs->'Condition' as tree_health,
-                case when t.udfs->'JC Forester - Roots Sidewalk Issue' = 'Yes' then 'Yes' else null end as sidewalk_issue,
-                case when t.udfs->'JC Forester - Canopy Power Lines Issue' = 'Yes' then 'Yes' else null end  as power_lines_issue
-        from    treemap_mapfeature m
-        join	treemap_tree t  on m.id = t.plot_id
-        left JOIN    treemap_species s on s.id = t.species_id
-        left JOIN   treemap_boundary ward on (ST_Within(m.the_geom_webmercator, ward.the_geom_webmercator))
-        left JOIN   treemap_boundary neighborhood on (ST_Within(m.the_geom_webmercator, neighborhood.the_geom_webmercator))
-        where   1=1
-        AND     (
-                t.udfs->'Condition' != 'Healthy'
-            OR  t.udfs->'JC Forester - Roots Sidewalk Issue' = 'Yes'
-            OR  t.udfs->'JC Forester - Canopy Power Lines Issue' = 'Yes'
-        )
-        and     lower(ward.category) = 'ward'
-        and     ward.name is not null
-        and     lower(neighborhood.category) = 'neighborhood'
-        and     neighborhood.name is not null
-    """
-
-    columns = [
-        'plot_id',
-        'common_name',
-        'species',
-        'ward',
-        'neighborhood',
-        'health',
-        'sidewalk_issue',
-        'power_lines_issue'
-    ]
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        results = cursor.fetchall()
-        #return [dict(zip(columns, r)) for r in results]
-        return {'columns': columns, 'data': results}
